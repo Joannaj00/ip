@@ -4,10 +4,10 @@ public class Jojo {
     private static final String LINE = "____________________________________________________________";
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ArrayList<String> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
 
         System.out.println(LINE);
-        System.out.println("Hello! I'm Jojo\n What can I do for you?");
+        System.out.println("Hello! I'm Jojo\nWhat can I do for you?");
         System.out.println(LINE);
 
         while(true) {
@@ -20,12 +20,30 @@ public class Jojo {
                 break;
             } else if (input.equals("list")) {
                 System.out.println(LINE);
+                System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < tasks.size(); i++) {
-                    System.out.println((i + 1) + ". " + tasks.get(i));
+                    System.out.println((i + 1) + "." + tasks.get(i));
                 }
                 System.out.println(LINE);
+            } else if (input.startsWith("mark")) {
+                int index = Integer.parseInt(input.split(" ")[1]) - 1;
+                Task t = tasks.get(index);
+                t.markAsDone();
+                System.out.println(LINE);
+                System.out.println("Nice! I've marked this task as done:");
+                System.out.println("  " + t);
+                System.out.println(LINE);
+            } else if (input.startsWith("unmark")) {
+                int index = Integer.parseInt(input.split(" ")[1]) - 1;
+                Task t = tasks.get(index);
+                t.markAsNotDone();
+                System.out.println(LINE);
+                System.out.println("OK, I've marked this task as not done yet:");
+                System.out.println("  " + t);
+                System.out.println(LINE);
             } else {
-                tasks.add(input);
+                Task t = new Task(input);
+                tasks.add(t);
                 System.out.println(LINE);
                 System.out.println("added: " + input);
                 System.out.println(LINE);
