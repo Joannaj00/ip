@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 public class Jojo {
     private static final String LINE = "____________________________________________________________";
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ArrayList<Task> tasks = new ArrayList<>();
@@ -10,7 +12,7 @@ public class Jojo {
         System.out.println("Hello! I'm Jojo\nWhat can I do for you?");
         System.out.println(LINE);
 
-        while(true) {
+        while (true) {
             String input = sc.nextLine();
 
             if (input.equals("bye")) {
