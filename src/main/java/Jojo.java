@@ -44,11 +44,40 @@ public class Jojo {
                 System.out.println("  " + t);
                 System.out.println(LINE);
             } else {
-                Task t = new Task(input);
-                tasks.add(t);
-                System.out.println(LINE);
-                System.out.println("added: " + input);
-                System.out.println(LINE);
+                if (input.startsWith("todo")) {
+                    String description = input.substring(5).trim();
+                    Task t = new Todo(description);
+                    tasks.add(t);
+                    System.out.println(LINE);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + t);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(LINE);
+                } else if (input.startsWith("deadline")) {
+                    int byPosition = input.indexOf("/by");
+                    String description = input.substring(9, byPosition).trim();
+                    String by = input.substring(byPosition + 4).trim();
+                    Task t = new Deadline(description, by);
+                    tasks.add(t);
+                    System.out.println(LINE);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + t);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(LINE);
+                } else if (input.startsWith("event")) {
+                    int fromPosition = input.indexOf("/from");
+                    int toPosition = input.indexOf("/to");
+                    String description = input.substring(6, fromPosition).trim();
+                    String from = input.substring(fromPosition + 6, toPosition).trim();
+                    String to = input.substring(toPosition + 4).trim();
+                    Task t = new Event(description, from, to);
+                    tasks.add(t);
+                    System.out.println(LINE);
+                    System.out.println("Got it. I've added this task:");
+                    System.out.println("  " + t);
+                    System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+                    System.out.println(LINE);
+                }
             }
         }
         sc.close();
