@@ -109,8 +109,21 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleUnmark(String input) {
-        int index = Integer.parseInt(input.split(" ")[1]) - 1;
+    private static void handleUnmark(String input) throws DukeException {
+        String[] parts = input.split(" ");
+        if (parts.length != 2) {
+            throw new DukeException("You need provide a task number after 'unmark'");
+        }
+        int index;
+        try{
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new DukeException("Task number must be a valid integer");
+        }
+        if (index < 0 || index > tasks.size() - 1) {
+            throw new DukeException("Task number is out of range");
+        }
+
         Task t = tasks.get(index);
         t.markAsNotDone();
         System.out.println(LINE);
