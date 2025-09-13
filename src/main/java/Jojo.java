@@ -52,12 +52,18 @@ public class Jojo {
         sc.close();
     }
 
-    private static void handleEvent(String input) {
+    private static void handleEvent(String input) throws DukeException{
         int fromPosition = input.indexOf("/from");
         int toPosition = input.indexOf("/to");
+        if (fromPosition == -1 && toPosition == -1) {
+            throw new DukeException("An event must include both /from and /to");
+        }
         String description = input.substring(6, fromPosition).trim();
         String from = input.substring(fromPosition + 6, toPosition).trim();
         String to = input.substring(toPosition + 4).trim();
+        if (description.isEmpty() || to.isEmpty() || from.isEmpty()) {
+            throw new DukeException("Event needs description, /from, and /to fields");
+        }
         Task t = new Event(description, from, to);
         tasks.add(t);
         System.out.println(LINE);
@@ -81,6 +87,9 @@ public class Jojo {
     }
 
     private static void handleTodo(String input) throws DukeException {
+        if (input.length() <= 4) {
+            throw new DukeException("The description of todo can't be empty :(");
+        }
         String description = input.substring(5).trim();
         if (description.isEmpty()) {
             throw new DukeException("The description of todo can't be empty :(");
