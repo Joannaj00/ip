@@ -52,7 +52,7 @@ public class Jojo {
         sc.close();
     }
 
-    private static void handleEvent(String input) throws DukeException{
+    private static void handleEvent(String input) throws DukeException {
         int fromPosition = input.indexOf("/from");
         int toPosition = input.indexOf("/to");
         if (fromPosition == -1 && toPosition == -1) {
@@ -73,10 +73,16 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleDeadline(String input) {
+    private static void handleDeadline(String input) throws DukeException {
         int byPosition = input.indexOf("/by");
+        if (byPosition == -1) {
+            throw new DukeException("An deadline must include /by");
+        }
         String description = input.substring(9, byPosition).trim();
         String by = input.substring(byPosition + 4).trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            throw new DukeException("Deadline needs description, /by");
+        }
         Task t = new Deadline(description, by);
         tasks.add(t);
         System.out.println(LINE);
