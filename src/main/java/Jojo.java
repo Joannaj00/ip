@@ -23,33 +23,47 @@ public class Jojo {
 
         while (true) {
             String input = sc.nextLine();
-
-            if (input.equals(CMD_BYE)) {
-                showExitMessage();
-                break;
-            } else if (input.equals(CMD_LIST)) {
-                showTaskList();
-            } else if (input.startsWith(CMD_MARK)) {
-                handleMark(input);
-            } else if (input.startsWith(CMD_UNMARK)) {
-                handleUnmark(input);
-            } else if (input.startsWith(CMD_TODO)) {
-                handleTodo(input);
-            } else if (input.startsWith(CMD_DEADLINE)) {
-                handleDeadline(input);
-            } else if (input.startsWith(CMD_EVENT)) {
-                handleEvent(input);
+            try {
+                if (input.equals(CMD_BYE)) {
+                    showExitMessage();
+                    break;
+                } else if (input.equals(CMD_LIST)) {
+                    showTaskList();
+                } else if (input.startsWith(CMD_MARK)) {
+                    handleMark(input);
+                } else if (input.startsWith(CMD_UNMARK)) {
+                    handleUnmark(input);
+                } else if (input.startsWith(CMD_TODO)) {
+                    handleTodo(input);
+                } else if (input.startsWith(CMD_DEADLINE)) {
+                    handleDeadline(input);
+                } else if (input.startsWith(CMD_EVENT)) {
+                    handleEvent(input);
+                } else {
+                    throw new DukeException("Sorry!!! I don’t understand the command: " + input);
+                }
+            } catch (DukeException e) {
+                System.out.println(LINE);
+                System.out.println("Oh no!!!! " + e.getMessage());
+                System.out.println(LINE);
             }
+
         }
         sc.close();
     }
 
-    private static void handleEvent(String input) {
+    private static void handleEvent(String input) throws DukeException {
         int fromPosition = input.indexOf("/from");
         int toPosition = input.indexOf("/to");
+        if (fromPosition == -1 && toPosition == -1) {
+            throw new DukeException("An event must include both /from and /to");
+        }
         String description = input.substring(6, fromPosition).trim();
         String from = input.substring(fromPosition + 6, toPosition).trim();
         String to = input.substring(toPosition + 4).trim();
+        if (description.isEmpty() || to.isEmpty() || from.isEmpty()) {
+            throw new DukeException("Event needs description, /from, and /to fields");
+        }
         Task t = new Event(description, from, to);
         tasks.add(t);
         System.out.println(LINE);
@@ -59,10 +73,16 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleDeadline(String input) {
+    private static void handleDeadline(String input) throws DukeException {
         int byPosition = input.indexOf("/by");
+        if (byPosition == -1) {
+            throw new DukeException("An deadline must include /by");
+        }
         String description = input.substring(9, byPosition).trim();
         String by = input.substring(byPosition + 4).trim();
+        if (description.isEmpty() || by.isEmpty()) {
+            throw new DukeException("Deadline needs description, /by");
+        }
         Task t = new Deadline(description, by);
         tasks.add(t);
         System.out.println(LINE);
@@ -72,8 +92,14 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleTodo(String input) {
+    private static void handleTodo(String input) throws DukeException {
+        if (input.length() <= 4) {
+            throw new DukeException("The description of todo can't be empty :(");
+        }
         String description = input.substring(5).trim();
+        if (description.isEmpty()) {
+            throw new DukeException("The description of todo can't be empty :(");
+        }
         Task t = new Todo(description);
         tasks.add(t);
         System.out.println(LINE);
@@ -83,8 +109,21 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleUnmark(String input) {
-        int index = Integer.parseInt(input.split(" ")[1]) - 1;
+    private static void handleUnmark(String input) throws DukeException {
+        String[] parts = input.split(" ");
+        if (parts.length != 2) {
+            throw new DukeException("You need provide a task number after 'unmark'");
+        }
+        int index;
+        try{
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new DukeException("Task number must be a valid integer");
+        }
+        if (index < 0 || index > tasks.size() - 1) {
+            throw new DukeException("Task number is out of range");
+        }
+
         Task t = tasks.get(index);
         t.markAsNotDone();
         System.out.println(LINE);
@@ -93,8 +132,21 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleMark(String input) {
-        int index = Integer.parseInt(input.split(" ")[1]) - 1;
+    private static void handleMark(String input) throws DukeException {
+        String[] parts = input.split(" ");
+        if (parts.length != 2) {
+            throw new DukeException("You need provide a task number after 'unmark'");
+        }
+        int index;
+        try{
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new DukeException("Task number must be a valid integer");
+        }
+        if (index < 0 || index > tasks.size() - 1) {
+            throw new DukeException("Task number is out of range");
+        }
+
         Task t = tasks.get(index);
         t.markAsDone();
         System.out.println(LINE);
