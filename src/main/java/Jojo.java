@@ -23,23 +23,31 @@ public class Jojo {
 
         while (true) {
             String input = sc.nextLine();
-
-            if (input.equals(CMD_BYE)) {
-                showExitMessage();
-                break;
-            } else if (input.equals(CMD_LIST)) {
-                showTaskList();
-            } else if (input.startsWith(CMD_MARK)) {
-                handleMark(input);
-            } else if (input.startsWith(CMD_UNMARK)) {
-                handleUnmark(input);
-            } else if (input.startsWith(CMD_TODO)) {
-                handleTodo(input);
-            } else if (input.startsWith(CMD_DEADLINE)) {
-                handleDeadline(input);
-            } else if (input.startsWith(CMD_EVENT)) {
-                handleEvent(input);
+            try {
+                if (input.equals(CMD_BYE)) {
+                    showExitMessage();
+                    break;
+                } else if (input.equals(CMD_LIST)) {
+                    showTaskList();
+                } else if (input.startsWith(CMD_MARK)) {
+                    handleMark(input);
+                } else if (input.startsWith(CMD_UNMARK)) {
+                    handleUnmark(input);
+                } else if (input.startsWith(CMD_TODO)) {
+                    handleTodo(input);
+                } else if (input.startsWith(CMD_DEADLINE)) {
+                    handleDeadline(input);
+                } else if (input.startsWith(CMD_EVENT)) {
+                    handleEvent(input);
+                } else {
+                    throw new DukeException("Sorry!!! I don’t understand the command: " + input);
+                }
+            } catch (DukeException e) {
+                System.out.println(LINE);
+                System.out.println("Oh no!!!! " + e.getMessage());
+                System.out.println(LINE);
             }
+
         }
         sc.close();
     }
@@ -72,8 +80,11 @@ public class Jojo {
         System.out.println(LINE);
     }
 
-    private static void handleTodo(String input) {
+    private static void handleTodo(String input) throws DukeException {
         String description = input.substring(5).trim();
+        if (description.isEmpty()) {
+            throw new DukeException("The description of todo can't be empty :(");
+        }
         Task t = new Todo(description);
         tasks.add(t);
         System.out.println(LINE);
