@@ -11,6 +11,7 @@ public class Jojo {
     private static final String CMD_TODO = "todo";
     private static final String CMD_DEADLINE = "deadline";
     private static final String CMD_EVENT = "event";
+    private static final String CMD_DELETE = "delete";
     
     private static final ArrayList<Task> tasks = new ArrayList<>();
     
@@ -39,6 +40,8 @@ public class Jojo {
                     handleDeadline(input);
                 } else if (input.startsWith(CMD_EVENT)) {
                     handleEvent(input);
+                } else if (input.startsWith(CMD_DELETE)) {
+                    handleDelete(input);
                 } else {
                     throw new DukeException("Sorry!!! I don’t understand the command: " + input);
                 }
@@ -167,6 +170,29 @@ public class Jojo {
     private static void showExitMessage() {
         System.out.println(LINE);
         System.out.println("Bye. Hope to see you again soon!");
+        System.out.println(LINE);
+    }
+
+    private static void handleDelete(String input) throws DukeException {
+        String[] parts = input.split(" ");
+        if (parts.length != 2) {
+            throw new DukeException("You need to add a number after 'delete'");
+        }
+        int index;
+        try {
+            index = Integer.parseInt(parts[1]) - 1;
+        } catch (NumberFormatException e) {
+            throw new DukeException("Task number must be a valid integer");
+        }
+        if (index < 0 || index >= tasks.size()) {
+            throw new DukeException("Task number is out of range");
+        }
+
+        Task removed = tasks.remove(index);
+        System.out.println(LINE);
+        System.out.println("Noted. I've removed this task:");
+        System.out.println("  " + removed);
+        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
         System.out.println(LINE);
     }
 }
