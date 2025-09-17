@@ -1,4 +1,11 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Jojo {
@@ -12,11 +19,13 @@ public class Jojo {
     private static final String CMD_DEADLINE = "deadline";
     private static final String CMD_EVENT = "event";
     
-    private static final ArrayList<Task> tasks = new ArrayList<>();
+    private static ArrayList<Task> tasks = new ArrayList<>();
+    private static final String FILE_PATH = "./data/duke.txt";
     
     public static void main(String[] args) {
+        loadTasks();
+
         Scanner sc = new Scanner(System.in);
-        
         System.out.println(LINE);
         System.out.println("Hello! I'm Jojo\nWhat can I do for you?");
         System.out.println(LINE);
@@ -42,6 +51,7 @@ public class Jojo {
                 } else {
                     throw new DukeException("Sorry!!! I don’t understand the command: " + input);
                 }
+                saveTasks();
             } catch (DukeException e) {
                 System.out.println(LINE);
                 System.out.println("Oh no!!!! " + e.getMessage());
@@ -50,6 +60,65 @@ public class Jojo {
 
         }
         sc.close();
+    }
+
+    private static void loadTasks() {
+        tasks = new ArrayList<>();
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            return;
+        }
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" \\| ");
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+                if (type.equals("T")) {
+                    Todo todo = new Todo(description);
+                    if (isDone) todo.markAsDone();
+                    tasks.add(todo);
+                } else if (type.equals("D") && parts.length >= 4) {
+                    Deadline d = new Deadline(description, parts[3]);
+                    if (isDone) d.markAsDone();
+                    tasks.add(d);
+                } else if (type.equals("E") && parts.length >= 5) {
+                    Event e = new Event(description, parts[3], parts[4]);
+                    if (isDone) e.markAsDone();
+                    tasks.add(e);
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+
+    private static void saveTasks() {
+        File folder = new File("./data");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+
+        List<String> lines = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task instanceof Todo) {
+                lines.add("T | " + (task.isDone ? "1" : "0") + " | " + task.description);
+            } else if (task instanceof Deadline) {
+                Deadline d = (Deadline) task;
+                lines.add("D | " + (d.isDone ? "1" : "0") + " | " + d.getDescription() + " | " + d.getBy());
+            } else if (task instanceof Event) {
+                Event e = (Event) task;
+                lines.add("E | " + (e.isDone ? "1" : "0") + " | " + e.getDescription() + " | " + e.getFrom() + " | " + e.getTo());
+            }
+        }
+        try {
+            Files.write(Paths.get("./data/duke.txt"), lines);
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
     }
 
     private static void handleEvent(String input) throws DukeException {
