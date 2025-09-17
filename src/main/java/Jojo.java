@@ -36,6 +36,7 @@ public class Jojo {
             try {
                 if (input.equals(CMD_BYE)) {
                     showExitMessage();
+                    saveTasks();
                     break;
                 } else if (input.equals(CMD_LIST)) {
                     showTaskList();
