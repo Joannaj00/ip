@@ -38,4 +38,15 @@ public class TaskList {
         }
         ui.showLine();
     }
+
+    public void find(String keyword) {
+        int count = 1;
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                System.out.println(count + "." + task);
+                count++;
+            }
+        }
+    }
+
 }
