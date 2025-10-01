@@ -4,13 +4,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Handles reading from and writing to the storage file. */
 public class Storage {
     private final String filePath;
 
+    /**
+     * Creates a Storage object with the given file path.
+     *
+     * @param filePath Path to the data file.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the storage file.
+     * If the file does not exist, returns an empty list.
+     *
+     * @return List of tasks loaded from file.
+     */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -44,6 +56,11 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the given list of tasks to the storage file.
+     *
+     * @param tasks List of tasks to be saved.
+     */
     public void save(List<Task> tasks) {
         File folder = new File("./data");
         if (!folder.exists()) {
