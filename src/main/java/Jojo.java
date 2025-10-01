@@ -8,6 +8,7 @@ public class Jojo {
     private static final String CMD_DEADLINE = "deadline";
     private static final String CMD_EVENT = "event";
     private static final String CMD_DELETE = "delete";
+    private static final String CMD_FIND = "find";
 
     private Ui ui;
     private Storage storage;
@@ -51,6 +52,8 @@ public class Jojo {
                 } else if (input.startsWith(CMD_DELETE)) {
                     handleDelete(input);
                     storage.save(tasks.getAll());
+                } else if (input.startsWith(CMD_FIND)) {
+                    handleFind(input);
                 } else {
                     throw new DukeException("Sorry!!! I don’t understand the command: " + input);
                 }
@@ -184,6 +187,19 @@ public class Jojo {
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + removed);
         System.out.println("Now you have " + tasks.size() + " tasks in the list.");
+        ui.showLine();
+    }
+
+    private void handleFind(String input) throws DukeException {
+        String[] parts = input.split(" ", 2);
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
+            throw new DukeException("You need to specify a keyword to search for.");
+        }
+
+        String keyword = parts[1].trim();
+        ui.showLine();
+        System.out.println("Here are the matching tasks in your list:");
+        tasks.find(keyword);
         ui.showLine();
     }
 
