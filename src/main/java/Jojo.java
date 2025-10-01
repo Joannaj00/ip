@@ -1,3 +1,8 @@
+/**
+ * Represents the main class for the Jojo chatbot.
+ * Jojo is a task management chatbot that can add, list, find,
+ * delete, and mark tasks, with persistent storage.
+ */
 public class Jojo {
     private static final String FILE_PATH = "./data/duke.txt";
     private static final String CMD_BYE = "bye";
@@ -14,12 +19,20 @@ public class Jojo {
     private Storage storage;
     private TaskList tasks;
 
+    /**
+     * Creates a new Jojo chatbot instance.
+     * Loads previously saved tasks from the specified file path.
+     */
     public Jojo() {
         ui = new Ui();
         storage = new Storage(FILE_PATH);
         tasks = new TaskList(storage.load());
     }
 
+    /**
+     * Runs the chatbot loop until the user enters the bye command.
+     * Commands are parsed and executed sequentially.
+     */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
